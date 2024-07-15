@@ -7,10 +7,8 @@ import (
 
 // TODO: check is owner of feed
 func getFeedByID(c *gin.Context) {
-
 	id := c.Param("id")
 	feed, err := models.FindFeedByID(id)
-
 	if err != nil {
 		c.JSON(404, gin.H{"error": "Feed not found"})
 		return
@@ -27,7 +25,6 @@ func getFeedsByUserID(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "Feed not found"})
 		return
 	}
-
 	c.JSON(200, feeds)
 }
 
