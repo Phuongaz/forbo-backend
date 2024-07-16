@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/phuongaz/forbo/routers/v1/feed"
 	"github.com/phuongaz/forbo/routers/v1/user"
@@ -21,4 +22,11 @@ func setupRouter(router *gin.Engine) {
 			feed.RegisterFeedRouters(v1)
 		}
 	}
+
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+	corsConfig.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+
+	api.Use(cors.New(corsConfig))
 }

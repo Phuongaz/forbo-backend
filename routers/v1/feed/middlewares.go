@@ -67,6 +67,11 @@ func compareUserIDMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		if claims.Role == "admin" {
+			c.Next()
+			return
+		}
+
 		if claims.UserID != feed.UserID {
 			c.JSON(401, gin.H{"error": "Unauthorized"})
 			c.Abort()

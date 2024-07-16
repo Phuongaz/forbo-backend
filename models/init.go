@@ -1,21 +1,15 @@
 package models
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/phuongaz/forbo/common"
 )
 
-func InitModelsMigrate() {
+func InitModelsMigrate() error {
 	err := common.SQLDBUser.AutoMigrate(&UserModel{})
 	if err != nil {
-		log.Fatal("Error migrating user model")
-		fmt.Println(err)
+		return err
 	}
 	common.SQLDBFeed.AutoMigrate(&Feed{})
-	if err != nil {
-		log.Fatal("Error migrating feed model")
-		fmt.Println(err)
-	}
+
+	return nil
 }

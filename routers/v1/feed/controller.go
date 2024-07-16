@@ -5,7 +5,6 @@ import (
 	"github.com/phuongaz/forbo/models"
 )
 
-// TODO: check is owner of feed
 func getFeedByID(c *gin.Context) {
 	id := c.Param("id")
 	feed, err := models.FindFeedByID(id)
@@ -25,6 +24,7 @@ func getFeedsByUserID(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "Feed not found"})
 		return
 	}
+
 	c.JSON(200, feeds)
 }
 
@@ -82,7 +82,8 @@ func deleteFeed(c *gin.Context) {
 		return
 	}
 
-	if err := feed.Delete(); err != nil {
+	err = feed.Delete()
+	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}

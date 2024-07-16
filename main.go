@@ -15,11 +15,19 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	common.InitSQLDB()
-	log.Println("Database connected")
+	err = common.InitSQLDB()
+	if err != nil {
+		log.Fatal("Error connecting to database ", err.Error())
+	} else {
+		log.Println("Database connected successfully")
+	}
 
-	models.InitModelsMigrate()
-	log.Println("Models migrated")
+	err = models.InitModelsMigrate()
+	if err != nil {
+		log.Fatal("Error migrating models ", err.Error())
+	} else {
+		log.Println("Migrate models successfully")
+	}
 
 	r := routers.InitRouters()
 	r.Run(":8000")

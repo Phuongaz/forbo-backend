@@ -27,15 +27,31 @@ func registerUser(c *gin.Context) {
 		return
 	}
 
-	if _, err := user.Register(); err != nil {
+	uid := common.GenerateUID(user.Email)
+	if found, _ := models.FindUserByID(uid); found != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "User already exists"})
+		return
+	}
 
+	regUser, err := user.Register()
+	if err != nil {
 		fmt.Println(err)
-
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
+	regResponse := models.UserAuthResponse{
+		Message: "User created successfully",
+	}
+	regResponse.Data.Token, err = helper.GenerateJWT(regUser.UserID, regUser.Role)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	regResponse.Data.UserID = regUser.UserID
+
+	c.JSON(201, gin.H{"result": regResponse})
 }
 
 func loginUser(c *gin.Context) {
@@ -56,13 +72,19 @@ func loginUser(c *gin.Context) {
 		return
 	}
 
-	token, err := helper.GenerateJWT(foundUser.UserID, foundUser.Role)
+	loginResponse := models.UserAuthResponse{
+		Message: "Login successfully",
+	}
+
+	loginResponse.Data.Token, err = helper.GenerateJWT(foundUser.UserID, foundUser.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token, "user": foundUser, "message": "Login successfully"})
+	loginResponse.Data.UserID = foundUser.UserID
+
+	c.JSON(201, gin.H{"result": loginResponse})
 }
 
 func followUser(c *gin.Context) {
@@ -74,6 +96,7 @@ func followUser(c *gin.Context) {
 	}
 	if followData.ID == followData.FollowerID {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "You can't follow yourself"})
+
 		return
 	}
 
