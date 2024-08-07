@@ -14,6 +14,13 @@ func InitRouters() *gin.Engine {
 }
 
 func setupRouter(router *gin.Engine) {
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"*"}
+	corsConfig.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+	corsConfig.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+
+	router.Use(cors.New(corsConfig))
+
 	api := router.Group("/api")
 	{
 		v1 := api.Group("/v1")
@@ -22,11 +29,4 @@ func setupRouter(router *gin.Engine) {
 			feed.RegisterFeedRouters(v1)
 		}
 	}
-
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowAllOrigins = true
-	corsConfig.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
-	corsConfig.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
-
-	api.Use(cors.New(corsConfig))
 }

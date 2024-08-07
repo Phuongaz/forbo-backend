@@ -1,6 +1,8 @@
 package feed
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/phuongaz/forbo/models"
 )
@@ -31,6 +33,7 @@ func getFeedsByUserID(c *gin.Context) {
 func createFeed(c *gin.Context) {
 	var newFeed models.FeedSkeleton
 	if err := c.ShouldBindJSON(&newFeed); err != nil {
+		log.Default().Println("Line 36,")
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
@@ -89,5 +92,4 @@ func deleteFeed(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"message": "Feed deleted successfully"})
-
 }

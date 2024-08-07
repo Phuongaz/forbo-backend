@@ -161,6 +161,18 @@ func getFollowers(c *gin.Context) {
 	c.JSON(http.StatusOK, user.Followers)
 }
 
+func getFollowings(c *gin.Context) {
+	userID := c.Param("id")
+	user, err := models.FindUserByID(userID)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, user.Following)
+}
+
 func getAvatar(c *gin.Context) {
 	userID := c.Param("id")
 	user, err := models.FindUserByID(userID)

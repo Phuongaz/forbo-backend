@@ -70,3 +70,10 @@ func GetClaimsFromToken(tokenString string) (*JWTClaims, error) {
 
 	return claims, nil
 }
+
+func extractToken(tokenString string) string {
+	if len(tokenString) > 6 && tokenString[:7] == "Bearer " {
+		tokenString = tokenString[7:]
+	}
+	return tokenString
+}

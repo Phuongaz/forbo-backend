@@ -13,6 +13,7 @@ func RegisterUserRouters(router *gin.RouterGroup) {
 		user.POST("/follow", followUser)
 		user.POST("/unfollow", unfollowUser)
 		user.GET("/followers/:id", getFollowers)
+		user.GET("/followings/:id", getFollowings)
 		user.POST("/avatar", uploadAvatar)
 		user.GET("/avatar/:id", getAvatar)
 	}
